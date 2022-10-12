@@ -88,12 +88,14 @@ function update() {
         tankLastDir = 0;
     }
 
+    // Displays sky and ground
     color("cyan");
     rect(0,0, G.WIDTH, G.HEIGHT);
     color("green");
     rect(0, G.HEIGHT-17, G.WIDTH, 20);
     color("black");
 
+    // Restrains bomber sprite to screen
     bomber.pos.clamp(0, G.WIDTH, 10, G.HEIGHT - 10);
 
     // Changes bomber direction
@@ -115,6 +117,7 @@ function update() {
     if(input.isJustPressed){
         bomber.dir *= -1;
     }
+    // Launches bombs
     if(input.isPressed){
         const posX = bomber.pos.x;
         const posY = bomber.pos.y;
@@ -125,22 +128,25 @@ function update() {
             bombCharge = 0;
         }
     }
+    // Resets bomb counter
     if(input.isJustReleased){
         bombCharge = 20;
     }
 
+    // Spawns tanks
     tankSpawnCtr++;
     if(tankSpawnCtr >= G.TANKSPAWN / difficulty){
         this.posX;
         this.posY;
         this.spd;
         if(!tankLastDir){ //If last tank spawned was right
-            // Spawn on the left
+            // Spawn tank on the left side
             posX = 0;
             posY = G.HEIGHT - 20;
             spd = G.TANKSPD;
             tankLastDir = 1;
         }else{
+            // Spawn tank on the right side
             posX = G.WIDTH;
             posY = G.HEIGHT - 20;
             spd = -G.TANKSPD;
@@ -150,6 +156,7 @@ function update() {
         tankSpawnCtr = 0;
     }
 
+    // Moves bombs down the screen
     remove(bombs, (b) => {
         b.pos.y += G.BOMBSPD;
         char("e", b.pos);
@@ -157,6 +164,7 @@ function update() {
         return (b.pos.y > G.HEIGHT -20);
     })
 
+    // Moves bullets towards the bomber
     remove(bullets, (b) => {
         b.pos.x += b.vel.x * difficulty;
         b.pos.y += b.vel.y * difficulty;
@@ -166,6 +174,7 @@ function update() {
         }
     })
 
+    // Moves tanks across the screen
     remove(tanks, (t) => {
         t.pos.x += t.speed;
         t.coolDown--;
@@ -178,10 +187,12 @@ function update() {
             isCollidingWithBombs = char("c", t.pos).isColliding.char.e;
         }
 
+        // Adds score for killing tanks
         if(isCollidingWithBombs){
             addScore(100);
         }
 
+        // Shoots bullets from tanks towards the bomber
         if(t.coolDown <= 0){
             bullets.push({
                 pos: vec(t.pos.x, t.pos.y),
