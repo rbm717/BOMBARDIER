@@ -1,3 +1,4 @@
+// Code inspiration drawn from REFLECTOR and Tutorial project
 title = "BOMBARDIER";
 
 description = `
@@ -78,6 +79,9 @@ let bombCharge = 0;
 options = {
     viewSize: {x: G.WIDTH, y:G.HEIGHT},
     captureCanvasScale: 20,
+    isSoundEnabled:true,
+    isPlayingBgm: true,
+    seed: 111,
 };
 
 function update() {
@@ -170,6 +174,7 @@ function update() {
         b.pos.y += b.vel.y * difficulty;
         
         if(rect(b.pos, 1).isColliding.char.a || rect(b.pos, 1).isColliding.char.b){
+            play("hit");
             end();
         }
     })
@@ -190,6 +195,7 @@ function update() {
         // Adds score for killing tanks
         if(isCollidingWithBombs){
             addScore(100);
+            play("explosion");
         }
 
         // Shoots bullets from tanks towards the bomber
